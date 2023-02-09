@@ -2,6 +2,7 @@ import argparse
 import torch
 from n_body_system.dataset_nbody import NBodyDataset
 from n_body_system.model import GNN, EGNN, Baseline, Linear, EGNN_vel, Linear_dynamics, RF_vel
+from n_body_system.locs import LoCS
 import os
 from torch import nn, optim
 import json
@@ -101,6 +102,8 @@ def main():
         model = GNN(input_dim=6, hidden_nf=args.nf, n_layers=args.n_layers, device=device, recurrent=True)
     elif args.model == 'egnn_vel':
         model = EGNN_vel(in_node_nf=1, in_edge_nf=2, hidden_nf=args.nf, device=device, n_layers=args.n_layers, recurrent=True, norm_diff=args.norm_diff, tanh=args.tanh)
+    elif args.model == 'locs':
+        model = LoCS(input_size=6, hidden_size=args.nf, dropout_prob=0.0, num_dims=3)
     elif args.model == 'baseline':
         model = Baseline()
     elif args.model == 'linear_vel':
@@ -182,6 +185,12 @@ def train(model, optimizer, epoch, loader, backprop=True):
             nodes = torch.sqrt(torch.sum(vel ** 2, dim=1)).unsqueeze(1).detach()
             rows, cols = edges
             loc_dist = torch.sum((loc[rows] - loc[cols])**2, 1).unsqueeze(1)  # relative distances among locations
+            edge_attr = torch.cat([edge_attr, loc_dist], 1).detach()  # concatenate all edge properties
+            loc_pred = model(nodes, loc.detach(), edges, vel, edge_attr)
+        elif args.model == 'locs':
+            nodes = torch.sqrt(torch.sum(vel ** 2, dim=1)).unsqueeze(1).detach()
+            rows, cols = edges
+            loc_dist = torch.sqrt(torch.sum((loc[rows] - loc[cols])**2, 1)).unsqueeze(1)  # relative distances among locations
             edge_attr = torch.cat([edge_attr, loc_dist], 1).detach()  # concatenate all edge properties
             loc_pred = model(nodes, loc.detach(), edges, vel, edge_attr)
         elif args.model == 'baseline':

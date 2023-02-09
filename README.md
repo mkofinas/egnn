@@ -1,9 +1,9 @@
 # E(n) Equivariant Graph Neural Networks
 
-Official implementation (Pytorch 1.7.1) of:  
+Official implementation (Pytorch 1.7.1) of:
 
-**E(n) Equivariant Graph Neural Networks**  
-Victor Garcia Satorras, Emiel Hogeboom, Max Welling  
+**E(n) Equivariant Graph Neural Networks**
+Victor Garcia Satorras, Emiel Hogeboom, Max Welling
 https://arxiv.org/abs/2102.09844
 
 <img src="models/egnn.png" width="400">
@@ -52,103 +52,109 @@ python -u generate_dataset.py --num-train 10000 --seed 43 --sufix small
 
 #### Run experiments
 
-*EGNN model*  
+*LoCS model*
+```
+python -u main_nbody.py --exp_name exp_1_locs --model locs --max_training_samples 3000 --lr 1e-3
+```
+
+
+*EGNN model*
 ```
 python -u main_nbody.py --exp_name exp_1_egnn_vel --model egnn_vel --max_training_samples 3000 --lr 5e-4
 ```
-  
 
-*GNN model*  
+
+*GNN model*
 ```
 python -u main_nbody.py --exp_name exp_1_gnn --model gnn --max_training_samples 3000 --lr 1e-3
 ```
-  
-  
-*Radial Field*  
+
+
+*Radial Field*
 ```
-python -u main_nbody.py --exp_name exp_1_gnn --model rf_vel --n_layers 4 --max_training_samples 3000 --lr 2e-4 
+python -u main_nbody.py --exp_name exp_1_gnn --model rf_vel --n_layers 4 --max_training_samples 3000 --lr 2e-4
 ```
-  
-  
+
+
 *Tensor Field Networks*
 ```
 python -u main_nbody.py --exp_name exp_1_tfn --model tfn --max_training_samples 3000 --lr 1e-3 --degree 2 --nf 32
-``` 
-  
-  
-*SE3 Transformer*  
+```
+
+
+*SE3 Transformer*
 ```
 python -u main_nbody.py --exp_name exp_1_se3 --model se3_transformer --max_training_samples 3000 --div 1 --degree 3 --nf 64 --lr 5e-3
-```    
+```
 
 #### N-body system sweep experiment
 For the experiment where we sweep over different amounts of training samples you should create a larger training dataset
 ```
 cd n_body_system/dataset
-python -u generate_dataset.py  --num-train 50000 --sample-freq 500 
+python -u generate_dataset.py  --num-train 50000 --sample-freq 500
 ```
-Then you can train on in this new partition by adding `--dataset nbody` to the above training commands. You can choose the number of training samples by modifying the argument `--max_training_samples <number of training samples>` 
+Then you can train on in this new partition by adding `--dataset nbody` to the above training commands. You can choose the number of training samples by modifying the argument `--max_training_samples <number of training samples>`
 
 E.g. for the EGNN for 10.000 samples
 ```
 python -u main_nbody.py --exp_name exp_debug --model egnn_vel --max_training_samples 10000 --lr 5e-4 --dataset nbody
 ```
 
- 
+
 
 
 
 
 ### Graph Autoencoder experiment
 
-*GNN Erdos & Renyi*  
-```  
+*GNN Erdos & Renyi*
+```
 python -u main_ae.py --exp_name exp1_gnn_erdosrenyi --model ae --dataset erdosrenyinodes_0.25_none --K 8 --emb_nf 8 --noise_dim 0
-```  
+```
 
-*GNN Community*  
-```  
+*GNN Community*
+```
 python -u main_ae.py --exp_name exp1_gnn_community --model ae --dataset community_ours --K 8 --emb_nf 8 --noise_dim 0
-```  
+```
 
-*Noise-GNN Erdos&Renyi*  
-```  
+*Noise-GNN Erdos&Renyi*
+```
 python -u main_ae.py --exp_name exp1_gnn_noise_erdosrenyi --model ae --dataset erdosrenyinodes_0.25_none --K 8 --emb_nf 8 --noise_dim 1
-```  
-  
-*Noise GNN Community*  
-``` 
-python -u main_ae.py --exp_name exp1_noise_gnn_community --model ae --dataset community_ours --K 8 --emb_nf 8 --noise_dim 1
-``` 
-  
-*Radial Field Erdos&Renyi*  
-``` 
-python -u main_ae.py --exp_name exp1_rf_erdosrenyi --model ae_rf --dataset erdosrenyinodes_0.25_none --K 8 --emb_nf 8
-``` 
+```
 
-*Radial Field Community*  
-``` 
+*Noise GNN Community*
+```
+python -u main_ae.py --exp_name exp1_noise_gnn_community --model ae --dataset community_ours --K 8 --emb_nf 8 --noise_dim 1
+```
+
+*Radial Field Erdos&Renyi*
+```
+python -u main_ae.py --exp_name exp1_rf_erdosrenyi --model ae_rf --dataset erdosrenyinodes_0.25_none --K 8 --emb_nf 8
+```
+
+*Radial Field Community*
+```
 python -u main_ae.py --exp_name exp1_rf_community --model ae_rf --dataset community_ours --K 8 --emb_nf 8
-``` 
-  
-*EGNN Erdos&Renyi*  
+```
+
+*EGNN Erdos&Renyi*
 ```
 python -u main_ae.py --exp_name exp1_egnn_erdosrenyi --model ae_egnn --dataset erdosrenyinodes_0.25_none --K 8 --emb_nf 8
 ```
 
-*EGNN Community*  
+*EGNN Community*
 ```
 python -u main_ae.py --exp_name exp1_egnn_community --model ae_egnn --dataset community_ours --K 8 --emb_nf 8
 ```
 
 ----------------------------------------------------
-The following overfit eperiments are for (p=0.2). p can be modified by replacing the 0.2 value from the dataset name (e.g. erdosrenyinodes_0.2_overfit) to other values.  
+The following overfit eperiments are for (p=0.2). p can be modified by replacing the 0.2 value from the dataset name (e.g. erdosrenyinodes_0.2_overfit) to other values.
 
 *GNN Erdos&Renyi overfit*
 ```
 python -u main_ae.py --model ae --dataset erdosrenyinodes_0.2_overfit --epochs 10001 --test_interval 200 --K 16 --emb_nf 16 2>&1 | tee outputs_ae/$EXP.log &
 ```
-*Noise-GNN Erdos&Renyi overfit*  
+*Noise-GNN Erdos&Renyi overfit*
 ```
 python -u main_ae.py --model ae --dataset erdosrenyinodes_0.2_overfit --epochs 10001 --test_interval 200 --noise_dim 1 --K 16 --emb_nf 16 2>&1 | tee outputs_ae/$EXP.log &
 ```
@@ -159,7 +165,7 @@ python -u main_ae.py --model ae_egnn --dataset erdosrenyinodes_0.2_overfit --epo
 
 
 ### QM9 experiment
-properties --> [alpha | gap | homo | lumo | mu | Cv | G | H | r2 | U | U0 | zpve]  
+properties --> [alpha | gap | homo | lumo | mu | Cv | G | H | r2 | U | U0 | zpve]
 learning rate --> 1e-3 for [gap, homo lumo], 5r-4 for the rest
 ```
 python -u main_qm9.py --num_workers 2 --lr 5e-4 --property alpha --exp_name exp_1_alpha
