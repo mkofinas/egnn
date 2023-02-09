@@ -87,6 +87,16 @@ python -u main_nbody.py --exp_name exp_1_tfn --model tfn --max_training_samples 
 python -u main_nbody.py --exp_name exp_1_se3 --model se3_transformer --max_training_samples 3000 --div 1 --degree 3 --nf 64 --lr 5e-3
 ```
 
+| Method | MSE |
+| :-- | --- |
+| Linear | 0.0819 |
+| SE(3) Transformer | 0.0244 |
+| Tensor Field Network | 0.0155 |
+| Graph Neural Network | 0.0107 |
+| Radial Field | 0.0106 |
+| EGNN | 0.0071 |
+| LoCS | __0.0055__ |
+
 #### N-body system sweep experiment
 For the experiment where we sweep over different amounts of training samples you should create a larger training dataset
 ```
